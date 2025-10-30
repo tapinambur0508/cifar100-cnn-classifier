@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, jsonify
+import os
 import numpy as np
 from keras.models import load_model
 from PIL import Image
 import io
 import base64
+
+# Force TensorFlow to use CPU only (Render doesn't have GPU support)
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Reduce TensorFlow logging
 
 app = Flask(__name__)
 
@@ -170,4 +175,5 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
